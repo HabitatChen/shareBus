@@ -1,0 +1,38 @@
+.header {
+  background: white;
+  .header-top {
+    height: 60px;
+    line-height: 60px;
+    padding: 0 20px;
+    text-align: right;
+    a {
+      margin-left: 40px;
+    }
+  }
+  .breadcrumb  {
+    padding: 0 20px;
+    border-top: 1px solid #f9c700;
+    height: 40px;
+    line-height: 40px;
+    .breadcrumb-title {
+      text-align: center;
+      position: relative;
+      font-size: 18px;
+      &:after {
+        position: absolute;
+        content: '';
+        border-top: 9px solid white;
+        border-left: 12px solid transparent;
+        border-right: 12px solid transparent;
+        bottom: -8px;
+        left: calc(44%);
+      }
+    }
+    .weather {
+      text-align: right;
+      .weather-date {
+        margin-right: 20px;
+      }
+    }
+  }
+}
