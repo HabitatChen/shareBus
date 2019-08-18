@@ -6,10 +6,9 @@ import IRoute from './page/router-demo/router-2/router'
 import IRoute1 from './page/router-demo/router-3/router'
 import * as serviceWorker from './serviceWorker';
 import 'antd/dist/antd.css';
-import IRouter from './router'
-import IRouters from './router2'
+import IRouter from "./router"
 
-ReactDOM.render(<IRouters />, document.getElementById('root'));
+ReactDOM.render(<IRouter />, document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

@@ -2,10 +2,81 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f6a2de61-b1dc-443e-aeda-dc65cb2a407a" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/router2.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/page/ui/button/index.less" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/page/ui/loading/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/page/ui/modal/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/page/ui/modal/index.less" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/page/ui/notice/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/page/ui/ui.less" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/resource/api/.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/resource/api/city/list.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/resource/api/city/open.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/resource/api/info_alarm.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/resource/api/map/bike_list.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/resource/api/mock.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/resource/api/open_city.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/resource/api/order/detail.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/resource/api/order/ebike_info.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/resource/api/order/finish_order.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/resource/api/order/list.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/resource/api/permission/edit.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/resource/api/proxy.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/resource/api/query.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/resource/api/restful/_id/list.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/resource/api/role/create.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/resource/api/role/list.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/resource/api/role/user_list.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/resource/api/role/user_role_edit.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/resource/api/table/high/list.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/resource/api/table/list.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/resource/api/table/list1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/resource/api/upload.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/resource/api/user/add.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/resource/api/user/delete.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/resource/api/user/edit.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/resource/carousel-img/carousel-1.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/resource/carousel-img/carousel-2.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/resource/carousel-img/carousel-3.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/resource/common.less" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/resource/default.less" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/resource/favicon.ico" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/resource/gallery/1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/resource/gallery/10.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/resource/gallery/11.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/resource/gallery/12.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/resource/gallery/13.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/resource/gallery/14.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/resource/gallery/15.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/resource/gallery/16.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/resource/gallery/17.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/resource/gallery/18.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/resource/gallery/19.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/resource/gallery/2.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/resource/gallery/20.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/resource/gallery/21.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/resource/gallery/22.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/resource/gallery/23.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/resource/gallery/24.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/resource/gallery/25.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/resource/gallery/3.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/resource/gallery/4.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/resource/gallery/5.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/resource/gallery/6.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/resource/gallery/7.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/resource/gallery/8.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/resource/gallery/9.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/resource/header/index.less" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/resource/image/demo.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/resource/loading.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/resource/loading.less" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/resource/order/detail.less" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/resource/ui.less" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/route.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/page/ui/button/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/page/ui/button/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/router.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/router.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/style/common.less" beforeDir="false" afterPath="$PROJECT_DIR$/src/style/common.less" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -16,6 +87,7 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="Less File" />
         <option value="JavaScript File" />
       </list>
     </option>
@@ -28,7 +100,8 @@
   <component name="PropertiesComponent">
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/page/no-match" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/page/ui" />
+    <property name="list.type.of.created.stylesheet" value="Less" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
@@ -42,11 +115,11 @@
       <recent name="$PROJECT_DIR$/src" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/page/ui" />
+      <recent name="$PROJECT_DIR$/src" />
       <recent name="$PROJECT_DIR$/src/page/no-match" />
       <recent name="$PROJECT_DIR$/src/page/login" />
       <recent name="$PROJECT_DIR$/src/page/router-demo/router-3" />
-      <recent name="$PROJECT_DIR$/src/page/router-demo/router-2" />
-      <recent name="$PROJECT_DIR$/src/page/router-demo/router-1" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -72,7 +145,7 @@
       <option name="presentableId" value="Default" />
       <updated>1565498258748</updated>
       <workItem from="1565498260939" duration="4580000" />
-      <workItem from="1565790034125" duration="11590000" />
+      <workItem from="1565790034125" duration="21269000" />
     </task>
     <servers />
   </component>
