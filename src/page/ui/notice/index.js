@@ -17,6 +17,7 @@ export default class Notices extends React.Component {
 
   }
 
+
   render() {
     return (
       <div>
