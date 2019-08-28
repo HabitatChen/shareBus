@@ -2,6 +2,8 @@ import React from 'react'
 import {Modal, DatePicker, Button, Card, Form, Select, Table} from 'antd'
 import Utils from "../../utils/utils"
 import axios from '../../axios'
+import BaseForm from '../../components/baseform'
+import LearnForm from '../../components/baseform/learn-1'
 
 const FormItem = Form.Item
 const Option = Select.Option
@@ -21,8 +23,47 @@ class Order extends React.Component {
     page: 1
   }
 
+  formList = [
+    {
+      type: 'SELECT',
+      label: '城市',
+      field: 'city_id',
+      placeholder: '全部',
+      width: 100,
+      initialValue: '1',
+      list: [
+        {id: '0', name: '全部'},
+        {id: '1', name: '北京'},
+        {id: '2', name: '天津'},
+        {id: '3', name: '杭州'}
+      ]
+    },
+    {
+      type: '时间查询',
+    },
+    {
+      type: 'SELECT',
+      label: '订单状态',
+      field: 'state',
+      placeholder: '全部',
+      width: 100,
+      initialValue: '1',
+      list: [
+        {id: '0', name: '全部'},
+        {id: '1', name: '进行中'},
+        {id: '2', name: '结束行程'},
+      ]
+    }
+  ]
+
   componentDidMount() {
     this.requestList()
+  }
+
+  handleFilter = (params) => {
+    let _this = this
+    this.params = Object.assign({}, _this.params, params)
+    this.requestList(this.params)
   }
 
   // 订单详情
@@ -49,14 +90,12 @@ class Order extends React.Component {
     })
   }
 
-  requestList = () => {
+  requestList = (params) => {
     const _this = this
     axios.ajax({
       url: '/order/list',
       data: {
-        params: {
-          page: this.params.page
-        }
+        params
       }
     }).then(res => {
       if (res.code == 0) {
@@ -141,7 +180,11 @@ class Order extends React.Component {
     return (
       <div>
         <Card>
-          <FilterForms />
+          <LearnForm
+            filterSubmit={this.handleFilter}
+            formList={this.formList}
+          />
+
         </Card>
         <Card>
           <Button onClick={this.openOrderDetail}>订单详情</Button>
@@ -170,7 +213,7 @@ class Order extends React.Component {
 
 export default Order
 
-class FilterForm extends React.Component {
+class FilterFormsss extends React.Component {
   render() {
     const {getFieldDecorator} = this.props.form
     return (
@@ -228,5 +271,5 @@ class FilterForm extends React.Component {
   }
 }
 
-const FilterForms = Form.create()(FilterForm)
+const FilterForms = Form.create()(FilterFormsss)
 

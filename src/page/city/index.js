@@ -17,6 +17,7 @@ export default class City extends React.Component {
     page: 1
   }
 
+
   componentDidMount() {
     this.request()
   }
