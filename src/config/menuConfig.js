@@ -47,11 +47,11 @@ const menuList = [
     children:[
       {
         title:'登录',
-        key:'/form/login',
+        key:'/admin/form/login',
       },
       {
         title:'注册',
-        key:'/form/reg',
+        key:'/admin/form/reg',
       }
     ]
   },
@@ -61,11 +61,11 @@ const menuList = [
     children:[
       {
         title:'基础表格',
-        key:'/table/basic',
+        key:'/admin/table/basic',
       },
       {
         title:'高级表格',
-        key:'/table/high',
+        key:'/admin/table/high',
       }
     ]
   },
@@ -75,11 +75,11 @@ const menuList = [
   },
   {
     title:'城市管理',
-    key:'/city'
+    key:'/admin/city'
   },
   {
     title:'订单管理',
-    key:'/order',
+    key:'/admin/order',
     btnList:[
       {
         title:'订单详情',

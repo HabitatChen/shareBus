@@ -9,7 +9,17 @@ import Loadings from './page/ui/loading'
 import Notice from './page/ui/notice'
 import Messages from './page/ui/message'
 import Tab from './page/ui/tabs'
+import Gallery from './page/ui/gallery'
+import Carousels from './page/ui/carousel'
+import Forms from './page/form/login'
+import SignUp from './page/form/sinUp'
 import NoMatch from './page/no-match'
+import BasicTable from "./page/table/basicTable"
+import HighTable from "./page/table/highTable"
+import OpenCity from "./page/city"
+import Order from "./page/order"
+import Common from "./common"
+import OrderDetail from './page/order/detail'
 
 export default class IRouter extends React.Component {
   render() {
@@ -28,12 +38,26 @@ export default class IRouter extends React.Component {
                   <Route path='/admin/ui/notification' component={Notice}/>
                   <Route path='/admin/ui/messages' component={Messages}/>
                   <Route path='/admin/ui/tabs' component={Tab}/>
+                  <Route path='/admin/ui/gallery' component={Gallery}/>
+                  <Route path='/admin/ui/carousel' component={Carousels}/>
+                  <Route path='/admin/form/login' component={Forms}/>
+                  <Route path='/admin/form/reg' component={SignUp}/>
+                  <Route path='/admin/table/basic' component={BasicTable}/>
+                  <Route path='/admin/table/high' component={HighTable}/>
+                  <Route path='/admin/city' component={OpenCity}/>
+                  <Route path='/admin/order' component={Order}/>
                   <Route component={NoMatch} />
                 </Switch>
 
               </Admin>
             }/>
-            <Route path='/order/detail' component={Login}/>
+            <Route path='/common' render={() => {
+              return (
+                <Common>
+                  <Route path='/common/order/detail/:orderId' component={OrderDetail} />
+                </Common>
+              )
+            }} />
           </Switch>
         </App>
       </HashRouter>

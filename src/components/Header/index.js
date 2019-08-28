@@ -42,26 +42,36 @@ export default class Header extends React.Component {
 
   render() {
     const { systemTime, weather, dayPictureUrl } = this.state
+    const { menuType } = this.props
     return (
       <div className='header'>
         <Row className='header-top'>
-          <Col span={24}>
+          {
+            menuType ? <Col span={6} className='logo'>
+              <img src="/assets/logo-ant.svg" alt=""/>
+              <span>IMMOC 通用管理系统</span>
+            </Col> : ''
+          }
+          <Col span={menuType ? '18' : '24'}>
             <span> 你好，{this.state.userName} </span>
-            <a href="/">退出</a>
+            <a href="/" style={{color: 'black'}}>退出</a>
           </Col>
         </Row>
-        <Row className='breadcrumb'>
-          <Col span={4} className='breadcrumb-title'>
-            首页
-          </Col>
-          <Col span={20} className='weather'>
-            <span className='weather-date'>{systemTime}</span>
-            <span className='weather-content'>
+        {
+          menuType ? '' : <Row className='breadcrumb'>
+            <Col span={4} className='breadcrumb-title'>
+              首页
+            </Col>
+            <Col span={20} className='weather'>
+              <span className='weather-date'>{systemTime}</span>
+              <span className='weather-content'>
               <img src={dayPictureUrl} alt="weather" style={{width: '25px'}}/>
-              {weather}
+                {weather}
             </span>
-          </Col>
-        </Row>
+            </Col>
+          </Row>
+        }
+
 
       </div>
     )
