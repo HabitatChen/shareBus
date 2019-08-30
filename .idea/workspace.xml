@@ -2,12 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f6a2de61-b1dc-443e-aeda-dc65cb2a407a" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/components/baseform/index.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/baseform/learn-1.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/page/city/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/page/city/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/axios/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/axios/index.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/page/order/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/page/order/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utils/utils.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/utils.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -77,6 +74,7 @@
       <updated>1565498258748</updated>
       <workItem from="1565498260939" duration="4580000" />
       <workItem from="1565790034125" duration="77442000" />
+      <workItem from="1567007465957" duration="1145000" />
     </task>
     <servers />
   </component>
@@ -88,7 +86,9 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
           </value>
         </entry>
       </map>
@@ -99,20 +99,17 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/page/order/index.js</url>
-          <line>118</line>
-          <properties lambdaOrdinal="-1" />
+          <line>120</line>
           <option name="timeStamp" value="2" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/page/order/index.js</url>
           <line>92</line>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="3" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/page/order/index.js</url>
-          <line>250</line>
-          <properties lambdaOrdinal="-1" />
+          <line>249</line>
           <option name="timeStamp" value="4" />
         </line-breakpoint>
       </breakpoints>
