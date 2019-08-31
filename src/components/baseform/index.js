@@ -49,12 +49,12 @@ class FilterForm extends React.Component {
           formItemList.push(SELECT)
         }
         if (item.type == 'INPUT') {
-          const INPUT = <FormItem width={width} label={label} key={field} >
+          var INPUT = <FormItem width={width} label={label} key={field} >
             {
               getFieldDecorator([field], {
                 initialValue: initValue,
               })(
-                <INPUT
+                <Input
                   type='text'
                   placeholder={placeholder}
                   width={width}
@@ -65,7 +65,7 @@ class FilterForm extends React.Component {
           formItemList.push(INPUT)
         }
         if (item.type == 'CHECKBOX') {
-          const CHECKBOX = <FormItem label={label} key={field} >
+          let CHECKBOX = <FormItem label={label} key={field} >
             {
               getFieldDecorator([field], {
                 initialValue: initValue, // 必须是 true or false
@@ -79,8 +79,23 @@ class FilterForm extends React.Component {
           </FormItem>
           formItemList.push(CHECKBOX)
         }
+        if (item.type == 'DATE') {
+          var Dater = <FormItem label={label} key={field} >
+            {
+              getFieldDecorator([field], {})(
+                <DatePicker
+                  placeholder={placeholder}
+                  showTime={true}
+                  format="YYYY-MM-DD HH:mm:ss"
+                />
+              )
+            }
+
+          </FormItem>
+          formItemList.push(Dater)
+        }
         if (item.type == '时间查询') {
-          const begin_time = <FormItem label='开始时间' key={field}>
+          let begin_time = <FormItem label='开始时间' key={field}>
             {
               getFieldDecorator('begin_time', {
               })(
@@ -93,7 +108,7 @@ class FilterForm extends React.Component {
             }
           </FormItem>
           formItemList.push(begin_time)
-          const end_time = <FormItem label="~" colon={false} key={field}>
+          let end_time = <FormItem label="~" colon={false} key={field}>
             {
               getFieldDecorator('end_time', {
               })(

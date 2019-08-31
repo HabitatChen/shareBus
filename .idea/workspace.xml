@@ -2,9 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f6a2de61-b1dc-443e-aeda-dc65cb2a407a" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/page/user/index.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/axios/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/axios/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/page/order/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/page/order/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/baseform/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/baseform/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/config/menuConfig.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/config/menuConfig.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/router.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/router.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -62,6 +64,16 @@
       </list>
     </option>
   </component>
+  <component name="RunManager">
+    <configuration name="index.js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="index.js" working-dir="$PROJECT_DIR$/src/components/baseform">
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Node.js.index.js" />
+      </list>
+    </recent_temporary>
+  </component>
   <component name="SvnConfiguration">
     <configuration />
   </component>
@@ -74,7 +86,7 @@
       <updated>1565498258748</updated>
       <workItem from="1565498260939" duration="4580000" />
       <workItem from="1565790034125" duration="77442000" />
-      <workItem from="1567007465957" duration="1145000" />
+      <workItem from="1567007465957" duration="5123000" />
     </task>
     <servers />
   </component>
@@ -111,6 +123,18 @@
           <url>file://$PROJECT_DIR$/src/page/order/index.js</url>
           <line>249</line>
           <option name="timeStamp" value="4" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/page/user/index.js</url>
+          <line>103</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="6" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/page/user/index.js</url>
+          <line>118</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="7" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

@@ -20,6 +20,7 @@ import OpenCity from "./page/city"
 import Order from "./page/order"
 import Common from "./common"
 import OrderDetail from './page/order/detail'
+import User from './page/user'
 
 export default class IRouter extends React.Component {
   render() {
@@ -46,6 +47,7 @@ export default class IRouter extends React.Component {
                   <Route path='/admin/table/high' component={HighTable}/>
                   <Route path='/admin/city' component={OpenCity}/>
                   <Route path='/admin/order' component={Order}/>
+                  <Route path='/admin/user' component={User}/>
                   <Route component={NoMatch} />
                 </Switch>
 
