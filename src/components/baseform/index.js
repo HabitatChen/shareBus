@@ -9,6 +9,7 @@ class FilterForm extends React.Component {
 
   // 绑定过滤方法
   handleFilterSubmit = () => {
+    // 在组件内部获取到这个值 通过调用父组件的方法 然后把值传到父组件
     let fieldsValue = this.props.form.getFieldsValue()
     this.props.filterSubmit(fieldsValue) // 父子组件通信 儿子调用父亲传递的方法
   }
@@ -93,6 +94,30 @@ class FilterForm extends React.Component {
 
           </FormItem>
           formItemList.push(Dater)
+        }
+        if (item.type == '城市') {
+          let city = <FormItem label='城市' key='city'>
+            {
+              getFieldDecorator('city', {
+                initialValue: '0'
+              })(
+                <Select
+                  style={{width: 80}}
+                >
+                  {Util.getOptionList(
+                    [
+                      {id: '0', name: '全部'},
+                      {id: '1', name: '北京'},
+                      {id: '2', name: '天津'},
+                      {id: '3', name: '杭州'}
+                      ]
+                  )}
+                </Select>
+              )
+            }
+          </FormItem>
+
+          formItemList.push(city)
         }
         if (item.type == '时间查询') {
           let begin_time = <FormItem label='开始时间' key={field}>

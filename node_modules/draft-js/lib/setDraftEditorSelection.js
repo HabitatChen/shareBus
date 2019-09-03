@@ -1,23 +1,24 @@
 /**
- * Copyright (c) 2013-present, Facebook, Inc.
- * All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
- * @providesModule setDraftEditorSelection
  * @format
  * 
+ * @emails oncall+draft_js
  */
-
 'use strict';
 
-var DraftJsDebugLogging = require('./DraftJsDebugLogging');
+var DraftEffects = require("./DraftEffects");
 
-var containsNode = require('fbjs/lib/containsNode');
-var getActiveElement = require('fbjs/lib/getActiveElement');
-var invariant = require('fbjs/lib/invariant');
+var DraftJsDebugLogging = require("./DraftJsDebugLogging");
+
+var containsNode = require("fbjs/lib/containsNode");
+
+var getActiveElement = require("fbjs/lib/getActiveElement");
+
+var invariant = require("fbjs/lib/invariant");
 
 function getAnonymizedDOM(node, getNodeLabels) {
   if (!node) {
@@ -25,11 +26,12 @@ function getAnonymizedDOM(node, getNodeLabels) {
   }
 
   var anonymized = anonymizeTextWithin(node, getNodeLabels);
+
   if (anonymized.nodeType === Node.TEXT_NODE) {
     return anonymized.textContent;
   }
 
-  !(anonymized instanceof Element) ? process.env.NODE_ENV !== 'production' ? invariant(false, 'Node must be an Element if it is not a text node.') : invariant(false) : void 0;
+  !(anonymized instanceof Element) ? process.env.NODE_ENV !== "production" ? invariant(false, 'Node must be an Element if it is not a text node.') : invariant(false) : void 0;
   return anonymized.outerHTML;
 }
 
@@ -42,10 +44,13 @@ function anonymizeTextWithin(node, getNodeLabels) {
   }
 
   var clone = node.cloneNode();
+
   if (clone.nodeType === 1 && labels.length) {
     clone.setAttribute('data-labels', labels.join(', '));
   }
+
   var childNodes = node.childNodes;
+
   for (var ii = 0; ii < childNodes.length; ii++) {
     clone.appendChild(anonymizeTextWithin(childNodes[ii], getNodeLabels));
   }
@@ -56,6 +61,7 @@ function anonymizeTextWithin(node, getNodeLabels) {
 function getAnonymizedEditorDOM(node, getNodeLabels) {
   // grabbing the DOM content of the Draft editor
   var currentNode = node;
+
   while (currentNode) {
     if (currentNode instanceof Element && currentNode.hasAttribute('contenteditable')) {
       // found the Draft editor container
@@ -64,13 +70,13 @@ function getAnonymizedEditorDOM(node, getNodeLabels) {
       currentNode = currentNode.parentNode;
     }
   }
+
   return 'Could not find contentEditable parent of node';
 }
 
 function getNodeLength(node) {
   return node.nodeValue === null ? node.childNodes.length : node.nodeValue.length;
 }
-
 /**
  * In modern non-IE browsers, we can support both forward and backward
  * selections.
@@ -80,6 +86,8 @@ function getNodeLength(node) {
  * to programatically create a backward selection. Thus, for all IE
  * versions, we use the old IE API to create our selections.
  */
+
+
 function setDraftEditorSelection(selectionState, node, blockKey, nodeStart, nodeEnd) {
   // It's possible that the editor has been removed from the DOM but
   // our selection code doesn't know it yet. Forcing selection in
@@ -93,9 +101,8 @@ function setDraftEditorSelection(selectionState, node, blockKey, nodeStart, node
   var anchorOffset = selectionState.getAnchorOffset();
   var focusKey = selectionState.getFocusKey();
   var focusOffset = selectionState.getFocusOffset();
-  var isBackward = selectionState.getIsBackward();
+  var isBackward = selectionState.getIsBackward(); // IE doesn't support backward selection. Swap key/offset pairs.
 
-  // IE doesn't support backward selection. Swap key/offset pairs.
   if (!selection.extend && isBackward) {
     var tempKey = anchorKey;
     var tempOffset = anchorOffset;
@@ -107,11 +114,9 @@ function setDraftEditorSelection(selectionState, node, blockKey, nodeStart, node
   }
 
   var hasAnchor = anchorKey === blockKey && nodeStart <= anchorOffset && nodeEnd >= anchorOffset;
-
-  var hasFocus = focusKey === blockKey && nodeStart <= focusOffset && nodeEnd >= focusOffset;
-
-  // If the selection is entirely bound within this node, set the selection
+  var hasFocus = focusKey === blockKey && nodeStart <= focusOffset && nodeEnd >= focusOffset; // If the selection is entirely bound within this node, set the selection
   // and be done.
+
   if (hasAnchor && hasFocus) {
     selection.removeAllRanges();
     addPointToSelection(selection, node, anchorOffset - nodeStart, selectionState);
@@ -124,11 +129,11 @@ function setDraftEditorSelection(selectionState, node, blockKey, nodeStart, node
     if (hasAnchor) {
       selection.removeAllRanges();
       addPointToSelection(selection, node, anchorOffset - nodeStart, selectionState);
-    }
-
-    // If the focus is within this node, we can assume that we have
+    } // If the focus is within this node, we can assume that we have
     // already set the appropriate start range on the selection, and
     // can simply extend the selection.
+
+
     if (hasFocus) {
       addFocusToSelection(selection, node, focusOffset - nodeStart, selectionState);
     }
@@ -139,62 +144,69 @@ function setDraftEditorSelection(selectionState, node, blockKey, nodeStart, node
     if (hasFocus) {
       selection.removeAllRanges();
       addPointToSelection(selection, node, focusOffset - nodeStart, selectionState);
-    }
-
-    // If this node has the anchor, we may assume that the correct
+    } // If this node has the anchor, we may assume that the correct
     // focus information is already stored on the selection object.
     // We keep track of it, reset the selection range, and extend it
     // back to the focus point.
+
+
     if (hasAnchor) {
       var storedFocusNode = selection.focusNode;
       var storedFocusOffset = selection.focusOffset;
-
       selection.removeAllRanges();
       addPointToSelection(selection, node, anchorOffset - nodeStart, selectionState);
       addFocusToSelection(selection, storedFocusNode, storedFocusOffset, selectionState);
     }
   }
 }
-
 /**
  * Extend selection towards focus point.
  */
+
+
 function addFocusToSelection(selection, node, offset, selectionState) {
   var activeElement = getActiveElement();
+
   if (selection.extend && containsNode(activeElement, node)) {
     // If `extend` is called while another element has focus, an error is
     // thrown. We therefore disable `extend` if the active element is somewhere
     // other than the node we are selecting. This should only occur in Firefox,
     // since it is the only browser to support multiple selections.
     // See https://bugzilla.mozilla.org/show_bug.cgi?id=921444.
-
     // logging to catch bug that is being reported in t16250795
     if (offset > getNodeLength(node)) {
       // the call to 'selection.extend' is about to throw
       DraftJsDebugLogging.logSelectionStateFailure({
         anonymizedDom: getAnonymizedEditorDOM(node),
-        extraParams: JSON.stringify({ offset: offset }),
+        extraParams: JSON.stringify({
+          offset: offset
+        }),
         selectionState: JSON.stringify(selectionState.toJS())
       });
-    }
+    } // logging to catch bug that is being reported in t18110632
 
-    // logging to catch bug that is being reported in t18110632
+
     var nodeWasFocus = node === selection.focusNode;
+
     try {
       selection.extend(node, offset);
     } catch (e) {
       DraftJsDebugLogging.logSelectionStateFailure({
         anonymizedDom: getAnonymizedEditorDOM(node, function (n) {
           var labels = [];
+
           if (n === activeElement) {
             labels.push('active element');
           }
+
           if (n === selection.anchorNode) {
             labels.push('selection anchor node');
           }
+
           if (n === selection.focusNode) {
             labels.push('selection focus node');
           }
+
           return labels;
         }),
         extraParams: JSON.stringify({
@@ -210,9 +222,9 @@ function addFocusToSelection(selection, node, offset, selectionState) {
           offset: offset
         }, null, 2),
         selectionState: JSON.stringify(selectionState.toJS(), null, 2)
-      });
-      // allow the error to be thrown -
+      }); // allow the error to be thrown -
       // better than continuing in a broken state
+
       throw e;
     }
   } else {
@@ -228,16 +240,20 @@ function addFocusToSelection(selection, node, offset, selectionState) {
 }
 
 function addPointToSelection(selection, node, offset, selectionState) {
-  var range = document.createRange();
-  // logging to catch bug that is being reported in t16250795
+  var range = document.createRange(); // logging to catch bug that is being reported in t16250795
+
   if (offset > getNodeLength(node)) {
     // in this case we know that the call to 'range.setStart' is about to throw
     DraftJsDebugLogging.logSelectionStateFailure({
       anonymizedDom: getAnonymizedEditorDOM(node),
-      extraParams: JSON.stringify({ offset: offset }),
+      extraParams: JSON.stringify({
+        offset: offset
+      }),
       selectionState: JSON.stringify(selectionState.toJS())
     });
+    DraftEffects.handleExtensionCausedError();
   }
+
   range.setStart(node, offset);
   selection.addRange(range);
 }

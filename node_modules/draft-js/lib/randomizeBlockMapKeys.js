@@ -1,48 +1,42 @@
 /**
- * Copyright (c) 2013-present, Facebook, Inc.
- * All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
- * @providesModule randomizeBlockMapKeys
  * @format
  * 
+ * @emails oncall+draft_js
  */
-
 'use strict';
 
-var ContentBlockNode = require('./ContentBlockNode');
-var Immutable = require('immutable');
+var ContentBlockNode = require("./ContentBlockNode");
 
-var generateRandomKey = require('./generateRandomKey');
+var generateRandomKey = require("./generateRandomKey");
+
+var Immutable = require("immutable");
 
 var OrderedMap = Immutable.OrderedMap;
 
-
 var randomizeContentBlockNodeKeys = function randomizeContentBlockNodeKeys(blockMap) {
-  var newKeysRef = {};
+  var newKeysRef = {}; // we keep track of root blocks in order to update subsequent sibling links
 
-  // we keep track of root blocks in order to update subsequent sibling links
-  var lastRootBlock = void 0;
-
+  var lastRootBlock;
   return OrderedMap(blockMap.withMutations(function (blockMapState) {
     blockMapState.forEach(function (block, index) {
       var oldKey = block.getKey();
       var nextKey = block.getNextSiblingKey();
       var prevKey = block.getPrevSiblingKey();
       var childrenKeys = block.getChildKeys();
-      var parentKey = block.getParentKey();
+      var parentKey = block.getParentKey(); // new key that we will use to build linking
 
-      // new key that we will use to build linking
-      var key = generateRandomKey();
+      var key = generateRandomKey(); // we will add it here to re-use it later
 
-      // we will add it here to re-use it later
       newKeysRef[oldKey] = key;
 
       if (nextKey) {
         var nextBlock = blockMapState.get(nextKey);
+
         if (nextBlock) {
           blockMapState.setIn([nextKey, 'prevSibling'], key);
         } else {
@@ -53,6 +47,7 @@ var randomizeContentBlockNodeKeys = function randomizeContentBlockNodeKeys(block
 
       if (prevKey) {
         var prevBlock = blockMapState.get(prevKey);
+
         if (prevBlock) {
           blockMapState.setIn([prevKey, 'nextSibling'], key);
         } else {
@@ -79,6 +74,7 @@ var randomizeContentBlockNodeKeys = function randomizeContentBlockNodeKeys(block
 
       childrenKeys.forEach(function (childKey) {
         var childBlock = blockMapState.get(childKey);
+
         if (childBlock) {
           blockMapState.setIn([childKey, 'parent'], key);
         } else {

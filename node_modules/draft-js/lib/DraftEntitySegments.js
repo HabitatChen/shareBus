@@ -1,16 +1,13 @@
 /**
- * Copyright (c) 2013-present, Facebook, Inc.
- * All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
- * @providesModule DraftEntitySegments
  * @format
  * 
+ * @emails oncall+draft_js
  */
-
 'use strict';
 
 /**
@@ -39,7 +36,11 @@
 var DraftEntitySegments = {
   getRemovalRange: function getRemovalRange(selectionStart, selectionEnd, text, entityStart, direction) {
     var segments = text.split(' ');
-    segments = segments.map(function ( /*string*/segment, /*number*/ii) {
+    segments = segments.map(function (
+    /*string*/
+    segment,
+    /*number*/
+    ii) {
       if (direction === 'forward') {
         if (ii > 0) {
           return ' ' + segment;
@@ -47,9 +48,9 @@ var DraftEntitySegments = {
       } else if (ii < segments.length - 1) {
         return segment + ' ';
       }
+
       return segment;
     });
-
     var segmentStart = entityStart;
     var segmentEnd;
     var segment;
@@ -58,9 +59,8 @@ var DraftEntitySegments = {
 
     for (var jj = 0; jj < segments.length; jj++) {
       segment = segments[jj];
-      segmentEnd = segmentStart + segment.length;
+      segmentEnd = segmentStart + segment.length; // Our selection overlaps this segment.
 
-      // Our selection overlaps this segment.
       if (selectionStart < segmentEnd && segmentStart < selectionEnd) {
         if (removalStart !== null) {
           removalEnd = segmentEnd;
@@ -95,5 +95,4 @@ var DraftEntitySegments = {
     };
   }
 };
-
 module.exports = DraftEntitySegments;

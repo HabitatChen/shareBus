@@ -1,27 +1,21 @@
 /**
- * Copyright (c) 2013-present, Facebook, Inc.
- * All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
- * @providesModule CompositeDraftDecorator
  * @format
  * 
+ * @emails oncall+draft_js
  */
-
 'use strict';
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-var Immutable = require('immutable');
+var Immutable = require("immutable");
 
 var List = Immutable.List;
-
-
 var DELIMITER = '.';
-
 /**
  * A CompositeDraftDecorator traverses through a list of DraftDecorator
  * instances to identify sections of a ContentBlock that should be rendered
@@ -42,9 +36,11 @@ var DELIMITER = '.';
  * preserved and the new match is discarded.
  */
 
-var CompositeDraftDecorator = function () {
+var CompositeDraftDecorator =
+/*#__PURE__*/
+function () {
   function CompositeDraftDecorator(decorators) {
-    _classCallCheck(this, CompositeDraftDecorator);
+    _defineProperty(this, "_decorators", void 0);
 
     // Copy the decorator array, since we use this array order to determine
     // precedence of decoration matching. If the array is mutated externally,
@@ -52,13 +48,24 @@ var CompositeDraftDecorator = function () {
     this._decorators = decorators.slice();
   }
 
-  CompositeDraftDecorator.prototype.getDecorations = function getDecorations(block, contentState) {
+  var _proto = CompositeDraftDecorator.prototype;
+
+  _proto.getDecorations = function getDecorations(block, contentState) {
     var decorations = Array(block.getText().length).fill(null);
 
-    this._decorators.forEach(function ( /*object*/decorator, /*number*/ii) {
+    this._decorators.forEach(function (
+    /*object*/
+    decorator,
+    /*number*/
+    ii) {
       var counter = 0;
       var strategy = decorator.strategy;
-      var callback = function callback( /*number*/start, /*number*/end) {
+
+      var callback = function callback(
+      /*number*/
+      start,
+      /*number*/
+      end) {
         // Find out if any of our matching range is already occupied
         // by another decorator. If so, discard the match. Otherwise, store
         // the component key for rendering.
@@ -67,25 +74,25 @@ var CompositeDraftDecorator = function () {
           counter++;
         }
       };
+
       strategy(block, callback, contentState);
     });
 
     return List(decorations);
   };
 
-  CompositeDraftDecorator.prototype.getComponentForKey = function getComponentForKey(key) {
+  _proto.getComponentForKey = function getComponentForKey(key) {
     var componentKey = parseInt(key.split(DELIMITER)[0], 10);
     return this._decorators[componentKey].component;
   };
 
-  CompositeDraftDecorator.prototype.getPropsForKey = function getPropsForKey(key) {
+  _proto.getPropsForKey = function getPropsForKey(key) {
     var componentKey = parseInt(key.split(DELIMITER)[0], 10);
     return this._decorators[componentKey].props;
   };
 
   return CompositeDraftDecorator;
 }();
-
 /**
  * Determine whether we can occupy the specified slice of the decorations
  * array.
@@ -98,13 +105,15 @@ function canOccupySlice(decorations, start, end) {
       return false;
     }
   }
+
   return true;
 }
-
 /**
  * Splice the specified component into our decoration array at the desired
  * range.
  */
+
+
 function occupySlice(targetArr, start, end, componentKey) {
   for (var ii = start; ii < end; ii++) {
     targetArr[ii] = componentKey;

@@ -1,29 +1,29 @@
 /**
- * Copyright (c) 2013-present, Facebook, Inc.
- * All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
- * @providesModule keyCommandPlainBackspace
  * @format
  * 
+ * @emails oncall+draft_js
  */
-
 'use strict';
 
-var EditorState = require('./EditorState');
-var UnicodeUtils = require('fbjs/lib/UnicodeUtils');
+var EditorState = require("./EditorState");
 
-var moveSelectionBackward = require('./moveSelectionBackward');
-var removeTextWithStrategy = require('./removeTextWithStrategy');
+var UnicodeUtils = require("fbjs/lib/UnicodeUtils");
 
+var moveSelectionBackward = require("./moveSelectionBackward");
+
+var removeTextWithStrategy = require("./removeTextWithStrategy");
 /**
  * Remove the selected range. If the cursor is collapsed, remove the preceding
  * character. This operation is Unicode-aware, so removing a single character
  * will remove a surrogate pair properly as well.
  */
+
+
 function keyCommandPlainBackspace(editorState) {
   var afterRemoval = removeTextWithStrategy(editorState, function (strategyState) {
     var selection = strategyState.getSelection();

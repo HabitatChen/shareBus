@@ -1,36 +1,32 @@
-'use strict';
+"use strict";
 
-var _assign = require('object-assign');
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } return target; }
 
-var _extends = _assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 /**
- * Copyright (c) 2013-present, Facebook, Inc.
- * All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
- * @providesModule DraftEntity
  * @format
  * 
+ * @emails oncall+draft_js
  */
+var DraftEntityInstance = require("./DraftEntityInstance");
 
-var DraftEntityInstance = require('./DraftEntityInstance');
-var Immutable = require('immutable');
+var Immutable = require("immutable");
 
-var invariant = require('fbjs/lib/invariant');
+var invariant = require("fbjs/lib/invariant");
 
 var Map = Immutable.Map;
-
-
 var instances = Map();
 var instanceKey = 0;
-
 /**
  * Temporary utility for generating the warnings
  */
+
 function logWarning(oldMethodCall, newMethodCall) {
   console.warn('WARNING: ' + oldMethodCall + ' will be deprecated soon!\nPlease use "' + newMethodCall + '" instead.');
 }
@@ -123,7 +119,6 @@ var DraftEntity = {
     logWarning('DraftEntity.replaceData', 'contentState.replaceEntityData');
     return DraftEntity.__replaceData(key, newData);
   },
-
   // ***********************************WARNING******************************
   // --- the above public API will be deprecated in the next version of Draft!
   // The methods below this line are private - don't call them directly.
@@ -145,7 +140,11 @@ var DraftEntity = {
    * retrieving data about the entity at render time.
    */
   __create: function __create(type, mutability, data) {
-    return DraftEntity.__add(new DraftEntityInstance({ type: type, mutability: mutability, data: data || {} }));
+    return DraftEntity.__add(new DraftEntityInstance({
+      type: type,
+      mutability: mutability,
+      data: data || {}
+    }));
   },
 
   /**
@@ -163,7 +162,7 @@ var DraftEntity = {
    */
   __get: function __get(key) {
     var instance = instances.get(key);
-    !!!instance ? process.env.NODE_ENV !== 'production' ? invariant(false, 'Unknown DraftEntity key: %s.', key) : invariant(false) : void 0;
+    !!!instance ? process.env.NODE_ENV !== "production" ? invariant(false, 'Unknown DraftEntity key: %s.', key) : invariant(false) : void 0;
     return instance;
   },
 
@@ -174,7 +173,9 @@ var DraftEntity = {
    */
   __mergeData: function __mergeData(key, toMerge) {
     var instance = DraftEntity.__get(key);
-    var newData = _extends({}, instance.getData(), toMerge);
+
+    var newData = _objectSpread({}, instance.getData(), toMerge);
+
     var newInstance = instance.set('data', newData);
     instances = instances.set(key, newInstance);
     return newInstance;
@@ -185,10 +186,10 @@ var DraftEntity = {
    */
   __replaceData: function __replaceData(key, newData) {
     var instance = DraftEntity.__get(key);
+
     var newInstance = instance.set('data', newData);
     instances = instances.set(key, newInstance);
     return newInstance;
   }
 };
-
 module.exports = DraftEntity;

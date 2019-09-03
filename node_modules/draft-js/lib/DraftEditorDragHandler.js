@@ -1,34 +1,43 @@
 /**
- * Copyright (c) 2013-present, Facebook, Inc.
- * All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
- * @providesModule DraftEditorDragHandler
  * @format
  * 
+ * @emails oncall+draft_js
  */
-
 'use strict';
 
-var DataTransfer = require('fbjs/lib/DataTransfer');
-var DraftModifier = require('./DraftModifier');
-var EditorState = require('./EditorState');
+var DataTransfer = require("fbjs/lib/DataTransfer");
 
-var findAncestorOffsetKey = require('./findAncestorOffsetKey');
-var getTextContentFromFiles = require('./getTextContentFromFiles');
-var getUpdatedSelectionState = require('./getUpdatedSelectionState');
-var isEventHandled = require('./isEventHandled');
-var nullthrows = require('fbjs/lib/nullthrows');
+var DraftModifier = require("./DraftModifier");
 
+var EditorState = require("./EditorState");
+
+var ReactDOM = require("react-dom");
+
+var findAncestorOffsetKey = require("./findAncestorOffsetKey");
+
+var getTextContentFromFiles = require("./getTextContentFromFiles");
+
+var getUpdatedSelectionState = require("./getUpdatedSelectionState");
+
+var isEventHandled = require("./isEventHandled");
+
+var nullthrows = require("fbjs/lib/nullthrows");
 /**
  * Get a SelectionState for the supplied mouse event.
  */
+
+
 function getSelectionForEvent(event, editorState) {
   var node = null;
   var offset = null;
+  /* $FlowFixMe(>=0.68.0 site=www,mobile) This comment suppresses an error
+   * found when Flow v0.68 was deployed. To see the error delete this comment
+   * and run Flow. */
 
   if (typeof document.caretRangeFromPoint === 'function') {
     var dropRange = document.caretRangeFromPoint(event.x, event.y);
@@ -44,7 +53,6 @@ function getSelectionForEvent(event, editorState) {
   node = nullthrows(node);
   offset = nullthrows(offset);
   var offsetKey = nullthrows(findAncestorOffsetKey(node));
-
   return getUpdatedSelectionState(editorState, offsetKey, offset, offsetKey, offset);
 }
 
@@ -54,6 +62,7 @@ var DraftEditorDragHandler = {
    */
   onDragEnd: function onDragEnd(editor) {
     editor.exitCurrentMode();
+    endDrag(editor);
   },
 
   /**
@@ -61,11 +70,10 @@ var DraftEditorDragHandler = {
    */
   onDrop: function onDrop(editor, e) {
     var data = new DataTransfer(e.nativeEvent.dataTransfer);
-
     var editorState = editor._latestEditorState;
     var dropSelection = getSelectionForEvent(e.nativeEvent, editorState);
-
     e.preventDefault();
+    editor._dragCount = 0;
     editor.exitCurrentMode();
 
     if (dropSelection == null) {
@@ -73,6 +81,7 @@ var DraftEditorDragHandler = {
     }
 
     var files = data.getFiles();
+
     if (files.length > 0) {
       if (editor.props.handleDroppedFiles && isEventHandled(editor.props.handleDroppedFiles(dropSelection, files))) {
         return;
@@ -85,27 +94,45 @@ var DraftEditorDragHandler = {
     }
 
     var dragType = editor._internalDrag ? 'internal' : 'external';
-    if (editor.props.handleDrop && isEventHandled(editor.props.handleDrop(dropSelection, data, dragType))) {
-      return;
-    }
 
-    if (editor._internalDrag) {
+    if (editor.props.handleDrop && isEventHandled(editor.props.handleDrop(dropSelection, data, dragType))) {// handled
+    } else if (editor._internalDrag) {
       editor.update(moveText(editorState, dropSelection));
-      return;
+    } else {
+      editor.update(insertTextAtSelection(editorState, dropSelection, data.getText()));
     }
 
-    editor.update(insertTextAtSelection(editorState, dropSelection, data.getText()));
+    endDrag(editor);
   }
 };
+
+function endDrag(editor) {
+  editor._internalDrag = false; // Fix issue #1383
+  // Prior to React v16.5.0 onDrop breaks onSelect event:
+  // https://github.com/facebook/react/issues/11379.
+  // Dispatching a mouseup event on DOM node will make it go back to normal.
+
+  var editorNode = ReactDOM.findDOMNode(editor);
+
+  if (editorNode) {
+    var mouseUpEvent = new MouseEvent('mouseup', {
+      view: window,
+      bubbles: true,
+      cancelable: true
+    });
+    editorNode.dispatchEvent(mouseUpEvent);
+  }
+}
 
 function moveText(editorState, targetSelection) {
   var newContentState = DraftModifier.moveText(editorState.getCurrentContent(), editorState.getSelection(), targetSelection);
   return EditorState.push(editorState, newContentState, 'insert-fragment');
 }
-
 /**
  * Insert text at a specified selection.
  */
+
+
 function insertTextAtSelection(editorState, selection, text) {
   var newContentState = DraftModifier.insertText(editorState.getCurrentContent(), selection, text, editorState.getCurrentInlineStyle());
   return EditorState.push(editorState, newContentState, 'insert-fragment');

@@ -1,61 +1,49 @@
 /**
- * Copyright (c) 2013-present, Facebook, Inc.
- * All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
- * @providesModule DraftEditorLeaf.react
  * @format
  * @flow
+ * @emails oncall+draft_js
  */
-
 'use strict';
 
-import type { BlockNodeRecord } from './BlockNodeRecord';
-import type { DraftInlineStyle } from './DraftInlineStyle';
-import type SelectionState from './SelectionState';
+import type { BlockNodeRecord } from "./BlockNodeRecord";
+import type { DraftInlineStyle } from "./DraftInlineStyle";
+import type SelectionState from "./SelectionState";
 
-const DraftEditorTextNode = require('./DraftEditorTextNode.react');
-var React = require('react');
-var ReactDOM = require('react-dom');
+const DraftEditorTextNode = require("./DraftEditorTextNode.react");
 
-const invariant = require('fbjs/lib/invariant');
-var setDraftEditorSelection = require('./setDraftEditorSelection');
+const React = require("react");
+
+const invariant = require("fbjs/lib/invariant");
+
+const setDraftEditorSelection = require("./setDraftEditorSelection");
 
 type Props = {
   // The block that contains this leaf.
-  block: BlockNodeRecord
-
+  block: BlockNodeRecord,
   // Mapping of style names to CSS declarations.
-  ; customStyleMap: Object
-
+  customStyleMap: Object,
   // Function that maps style names to CSS style objects.
-  ; customStyleFn: Function
-
+  customStyleFn: Function,
   // Whether to force the DOM selection after render.
-  ; forceSelection: boolean
-
+  forceSelection: boolean,
   // Whether this leaf is the last in its block. Used for a DOM hack.
-  ; isLast: boolean;
-
-  offsetKey: string
-
+  isLast: boolean,
+  offsetKey: string,
   // The current `SelectionState`, used to represent a selection range in the
   // editor
-  ; selection: ?SelectionState
-
+  selection: ?SelectionState,
   // The offset of this string within its block.
-  ; start: number
-
+  start: number,
   // The set of style(s) names to apply to the node.
-  ; styleSet: DraftInlineStyle
-
+  styleSet: DraftInlineStyle,
   // The full text to be rendered within this node.
-  ; text: string;
+  text: string,
 };
-
 /**
  * All leaf nodes in the editor are spans with single text nodes. Leaf
  * elements are styled based on the merging of an optional custom style map
@@ -65,6 +53,7 @@ type Props = {
  * DOM Selection API. In this way, top-level components can declaratively
  * maintain the selection state.
  */
+
 class DraftEditorLeaf extends React.Component<Props> {
   /**
    * By making individual leaf instances aware of their context within
@@ -75,28 +64,33 @@ class DraftEditorLeaf extends React.Component<Props> {
    * DOM structure of the DraftEditor component. If leaves had multiple
    * text nodes, this would be harder.
    */
-
   leaf: ?HTMLElement;
 
   _setSelection(): void {
-    const { selection } = this.props;
+    const {
+      selection
+    } = this.props; // If selection state is irrelevant to the parent block, no-op.
 
-    // If selection state is irrelevant to the parent block, no-op.
     if (selection == null || !selection.getHasFocus()) {
       return;
     }
 
-    const { block, start, text } = this.props;
+    const {
+      block,
+      start,
+      text
+    } = this.props;
     const blockKey = block.getKey();
     const end = start + text.length;
+
     if (!selection.hasEdgeWithin(blockKey, start, end)) {
       return;
-    }
-
-    // Determine the appropriate target node for selection. If the child
+    } // Determine the appropriate target node for selection. If the child
     // is not a text node, it is a <br /> spacer. In this case, use the
     // <span> itself as the selection target.
-    const node = ReactDOM.findDOMNode(this);
+
+
+    const node = this.leaf;
     invariant(node, 'Missing node');
     const child = node.firstChild;
     invariant(child, 'Missing child');
@@ -104,7 +98,7 @@ class DraftEditorLeaf extends React.Component<Props> {
 
     if (child.nodeType === Node.TEXT_NODE) {
       targetNode = child;
-    } else if (child.tagName === 'BR') {
+    } else if (child instanceof Element && child.tagName === 'BR') {
       targetNode = node;
     } else {
       targetNode = child.firstChild;
@@ -115,9 +109,10 @@ class DraftEditorLeaf extends React.Component<Props> {
   }
 
   shouldComponentUpdate(nextProps: Props): boolean {
-    const leafNode = ReactDOM.findDOMNode(this.leaf);
+    const leafNode = this.leaf;
     invariant(leafNode, 'Missing leafNode');
-    return leafNode.textContent !== nextProps.text || nextProps.styleSet !== this.props.styleSet || nextProps.forceSelection;
+    const shouldUpdate = leafNode.textContent !== nextProps.text || nextProps.styleSet !== this.props.styleSet || nextProps.forceSelection;
+    return shouldUpdate;
   }
 
   componentDidUpdate(): void {
@@ -129,18 +124,26 @@ class DraftEditorLeaf extends React.Component<Props> {
   }
 
   render(): React.Node {
-    const { block } = this.props;
-    let { text } = this.props;
-
-    // If the leaf is at the end of its block and ends in a soft newline, append
+    const {
+      block
+    } = this.props;
+    let {
+      text
+    } = this.props; // If the leaf is at the end of its block and ends in a soft newline, append
     // an extra line feed character. Browsers collapse trailing newline
     // characters, which leaves the cursor in the wrong place after a
     // shift+enter. The extra character repairs this.
+
     if (text.endsWith('\n') && this.props.isLast) {
       text += '\n';
     }
 
-    const { customStyleMap, customStyleFn, offsetKey, styleSet } = this.props;
+    const {
+      customStyleMap,
+      customStyleFn,
+      offsetKey,
+      styleSet
+    } = this.props;
     let styleObj = styleSet.reduce((map, styleName) => {
       const mergedStyles = {};
       const style = customStyleMap[styleName];
@@ -162,6 +165,7 @@ class DraftEditorLeaf extends React.Component<Props> {
         <DraftEditorTextNode>{text}</DraftEditorTextNode>
       </span>;
   }
+
 }
 
 module.exports = DraftEditorLeaf;

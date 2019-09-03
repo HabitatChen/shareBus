@@ -1,28 +1,29 @@
 /**
- * Copyright (c) 2013-present, Facebook, Inc.
- * All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
- * @providesModule keyCommandBackspaceToStartOfLine
  * @format
  * 
+ * @emails oncall+draft_js
  */
-
 'use strict';
 
-var EditorState = require('./EditorState');
+var EditorState = require("./EditorState");
 
-var expandRangeToStartOfLine = require('./expandRangeToStartOfLine');
-var getDraftEditorSelectionWithNodes = require('./getDraftEditorSelectionWithNodes');
-var moveSelectionBackward = require('./moveSelectionBackward');
-var removeTextWithStrategy = require('./removeTextWithStrategy');
+var expandRangeToStartOfLine = require("./expandRangeToStartOfLine");
+
+var getDraftEditorSelectionWithNodes = require("./getDraftEditorSelectionWithNodes");
+
+var moveSelectionBackward = require("./moveSelectionBackward");
+
+var removeTextWithStrategy = require("./removeTextWithStrategy");
 
 function keyCommandBackspaceToStartOfLine(editorState) {
   var afterRemoval = removeTextWithStrategy(editorState, function (strategyState) {
     var selection = strategyState.getSelection();
+
     if (selection.isCollapsed() && selection.getAnchorOffset() === 0) {
       return moveSelectionBackward(strategyState, 1);
     }
@@ -30,7 +31,6 @@ function keyCommandBackspaceToStartOfLine(editorState) {
     var domSelection = global.getSelection();
     var range = domSelection.getRangeAt(0);
     range = expandRangeToStartOfLine(range);
-
     return getDraftEditorSelectionWithNodes(strategyState, null, range.endContainer, range.endOffset, range.startContainer, range.startOffset).selectionState;
   }, 'backward');
 

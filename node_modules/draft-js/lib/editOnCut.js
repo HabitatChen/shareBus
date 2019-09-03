@@ -1,25 +1,24 @@
 /**
- * Copyright (c) 2013-present, Facebook, Inc.
- * All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
- * @providesModule editOnCut
  * @format
  * 
+ * @emails oncall+draft_js
  */
-
 'use strict';
 
-var DraftModifier = require('./DraftModifier');
-var EditorState = require('./EditorState');
-var Style = require('fbjs/lib/Style');
+var DraftModifier = require("./DraftModifier");
 
-var getFragmentFromSelection = require('./getFragmentFromSelection');
-var getScrollPosition = require('fbjs/lib/getScrollPosition');
+var EditorState = require("./EditorState");
 
+var Style = require("fbjs/lib/Style");
+
+var getFragmentFromSelection = require("./getFragmentFromSelection");
+
+var getScrollPosition = require("fbjs/lib/getScrollPosition");
 /**
  * On `cut` events, native behavior is allowed to occur so that the system
  * clipboard is set properly. This means that we need to take steps to recover
@@ -29,31 +28,30 @@ var getScrollPosition = require('fbjs/lib/getScrollPosition');
  * In addition, we can keep a copy of the removed fragment, including all
  * styles and entities, for use as an internal paste.
  */
+
+
 function editOnCut(editor, e) {
   var editorState = editor._latestEditorState;
   var selection = editorState.getSelection();
   var element = e.target;
-  var scrollPosition = void 0;
+  var scrollPosition; // No selection, so there's nothing to cut.
 
-  // No selection, so there's nothing to cut.
   if (selection.isCollapsed()) {
     e.preventDefault();
     return;
-  }
-
-  // Track the current scroll position so that it can be forced back in place
+  } // Track the current scroll position so that it can be forced back in place
   // after the editor regains control of the DOM.
+
+
   if (element instanceof Node) {
     scrollPosition = getScrollPosition(Style.getScrollParent(element));
   }
 
   var fragment = getFragmentFromSelection(editorState);
-  editor.setClipboard(fragment);
+  editor.setClipboard(fragment); // Set `cut` mode to disable all event handling temporarily.
 
-  // Set `cut` mode to disable all event handling temporarily.
-  editor.setMode('cut');
+  editor.setMode('cut'); // Let native `cut` behavior occur, then recover control.
 
-  // Let native `cut` behavior occur, then recover control.
   setTimeout(function () {
     editor.restoreEditorDOM(scrollPosition);
     editor.exitCurrentMode();

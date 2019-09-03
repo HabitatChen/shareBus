@@ -1,31 +1,42 @@
 /**
- * Copyright (c) 2013-present, Facebook, Inc.
- * All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
- * @providesModule editOnInput
  * @format
  * 
+ * @emails oncall+draft_js
  */
-
 'use strict';
 
-var DraftFeatureFlags = require('./DraftFeatureFlags');
-var DraftModifier = require('./DraftModifier');
-var DraftOffsetKey = require('./DraftOffsetKey');
-var EditorState = require('./EditorState');
-var UserAgent = require('fbjs/lib/UserAgent');
+var DraftModifier = require("./DraftModifier");
 
-var findAncestorOffsetKey = require('./findAncestorOffsetKey');
-var nullthrows = require('fbjs/lib/nullthrows');
+var DraftOffsetKey = require("./DraftOffsetKey");
+
+var EditorState = require("./EditorState");
+
+var UserAgent = require("fbjs/lib/UserAgent");
+
+var findAncestorOffsetKey = require("./findAncestorOffsetKey");
+
+var gkx = require("./gkx");
+
+var keyCommandPlainBackspace = require("./keyCommandPlainBackspace");
+
+var nullthrows = require("fbjs/lib/nullthrows");
 
 var isGecko = UserAgent.isEngine('Gecko');
-
 var DOUBLE_NEWLINE = '\n\n';
 
+function onInputType(inputType, editorState) {
+  switch (inputType) {
+    case 'deleteContentBackward':
+      return keyCommandPlainBackspace(editorState);
+  }
+
+  return editorState;
+}
 /**
  * This function is intended to handle spellcheck and autocorrect changes,
  * which occur in the DOM natively without any opportunity to observe or
@@ -38,21 +49,21 @@ var DOUBLE_NEWLINE = '\n\n';
  * when an `input` change leads to a DOM/model mismatch, the change should be
  * due to a spellcheck change, and we can incorporate it into our model.
  */
-function editOnInput(editor) {
+
+
+function editOnInput(editor, e) {
   if (editor._pendingStateFromBeforeInput !== undefined) {
     editor.update(editor._pendingStateFromBeforeInput);
     editor._pendingStateFromBeforeInput = undefined;
   }
 
   var domSelection = global.getSelection();
-
   var anchorNode = domSelection.anchorNode,
       isCollapsed = domSelection.isCollapsed;
-
   var isNotTextNode = anchorNode.nodeType !== Node.TEXT_NODE;
   var isNotTextOrElementNode = anchorNode.nodeType !== Node.TEXT_NODE && anchorNode.nodeType !== Node.ELEMENT_NODE;
 
-  if (DraftFeatureFlags.draft_killswitch_allow_nontextnodes) {
+  if (gkx('draft_killswitch_allow_nontextnodes')) {
     if (isNotTextNode) {
       return;
     }
@@ -70,6 +81,7 @@ function editOnInput(editor) {
     // To work around, we'll merge the sibling text nodes back into this one.
     var span = anchorNode.parentNode;
     anchorNode.nodeValue = span.textContent;
+
     for (var child = span.firstChild; child !== null; child = child.nextSibling) {
       if (child !== anchorNode) {
         span.removeChild(child);
@@ -92,47 +104,58 @@ function editOnInput(editor) {
 
   var content = editorState.getCurrentContent();
   var block = content.getBlockForKey(blockKey);
-  var modelText = block.getText().slice(start, end);
-
-  // Special-case soft newlines here. If the DOM text ends in a soft newline,
+  var modelText = block.getText().slice(start, end); // Special-case soft newlines here. If the DOM text ends in a soft newline,
   // we will have manually inserted an extra soft newline in DraftEditorLeaf.
   // We want to remove this extra newline for the purpose of our comparison
   // of DOM and model text.
+
   if (domText.endsWith(DOUBLE_NEWLINE)) {
     domText = domText.slice(0, -1);
-  }
+  } // No change -- the DOM is up to date. Nothing to do here.
 
-  // No change -- the DOM is up to date. Nothing to do here.
+
   if (domText === modelText) {
     // This can be buggy for some Android keyboards because they don't fire
     // standard onkeydown/pressed events and only fired editOnInput
     // so domText is already changed by the browser and ends up being equal
-    // to modelText unexpectedly
+    // to modelText unexpectedly.
+    // Newest versions of Android support the dom-inputevent-inputtype
+    // and we can use the `inputType` to properly apply the state changes.
+
+    /* $FlowFixMe inputType is only defined on a draft of a standard.
+     * https://w3c.github.io/input-events/#dom-inputevent-inputtype */
+    var inputType = e.nativeEvent.inputType;
+
+    if (inputType) {
+      var newEditorState = onInputType(inputType, editorState);
+
+      if (newEditorState !== editorState) {
+        editor.restoreEditorDOM();
+        editor.update(newEditorState);
+        return;
+      }
+    }
+
     return;
   }
 
-  var selection = editorState.getSelection();
+  var selection = editorState.getSelection(); // We'll replace the entire leaf with the text content of the target.
 
-  // We'll replace the entire leaf with the text content of the target.
   var targetRange = selection.merge({
     anchorOffset: start,
     focusOffset: end,
     isBackward: false
   });
-
   var entityKey = block.getEntityAt(start);
   var entity = entityKey && content.getEntity(entityKey);
   var entityType = entity && entity.getMutability();
-  var preserveEntity = entityType === 'MUTABLE';
-
-  // Immutable or segmented entities cannot properly be handled by the
+  var preserveEntity = entityType === 'MUTABLE'; // Immutable or segmented entities cannot properly be handled by the
   // default browser undo, so we have to use a different change type to
   // force using our internal undo method instead of falling through to the
   // native browser undo.
+
   var changeType = preserveEntity ? 'spellcheck-change' : 'apply-entity';
-
   var newContent = DraftModifier.replaceText(content, targetRange, domText, block.getInlineStyleAt(start), preserveEntity ? block.getEntityAt(start) : null);
-
   var anchorOffset, focusOffset, startOffset, endOffset;
 
   if (isGecko) {
@@ -153,19 +176,20 @@ function editOnInput(editor) {
     var charDelta = domText.length - modelText.length;
     startOffset = selection.getStartOffset();
     endOffset = selection.getEndOffset();
-
     anchorOffset = isCollapsed ? endOffset + charDelta : startOffset;
     focusOffset = endOffset + charDelta;
-  }
-
-  // Segmented entities are completely or partially removed when their
+  } // Segmented entities are completely or partially removed when their
   // text content changes. For this case we do not want any text to be selected
   // after the change, so we are not merging the selection.
+
+
   var contentWithAdjustedDOMSelection = newContent.merge({
     selectionBefore: content.getSelectionAfter(),
-    selectionAfter: selection.merge({ anchorOffset: anchorOffset, focusOffset: focusOffset })
+    selectionAfter: selection.merge({
+      anchorOffset: anchorOffset,
+      focusOffset: focusOffset
+    })
   });
-
   editor.update(EditorState.push(editorState, contentWithAdjustedDOMSelection, changeType));
 }
 

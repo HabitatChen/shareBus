@@ -1,22 +1,19 @@
-'use strict';
+"use strict";
 
 /**
- * Copyright (c) 2013-present, Facebook, Inc.
- * All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
- * @providesModule getNextDelimiterBlockKey
  * @format
  * 
+ * @emails oncall+draft_js
  *
  * This is unstable and not part of the public API and should not be used by
  * production systems. This file may be update/removed without notice.
  */
-
-var ContentBlockNode = require('./ContentBlockNode');
+var ContentBlockNode = require("./ContentBlockNode");
 
 var getNextDelimiterBlockKey = function getNextDelimiterBlockKey(block, blockMap) {
   var isExperimentalTreeBlock = block instanceof ContentBlockNode;
@@ -38,6 +35,7 @@ var getNextDelimiterBlockKey = function getNextDelimiterBlockKey(block, blockMap
   }
 
   var nextNonDescendantBlock = blockMap.get(parent);
+
   while (nextNonDescendantBlock && !nextNonDescendantBlock.getNextSiblingKey()) {
     var parentKey = nextNonDescendantBlock.getParentKey();
     nextNonDescendantBlock = parentKey ? blockMap.get(parentKey) : null;

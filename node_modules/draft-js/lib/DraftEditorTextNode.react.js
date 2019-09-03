@@ -1,41 +1,37 @@
 /**
- * Copyright (c) 2013-present, Facebook, Inc.
- * All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
- * @providesModule DraftEditorTextNode.react
  * @format
  * 
+ * @emails oncall+draft_js
  */
-
 'use strict';
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+function _inheritsLoose(subClass, superClass) { subClass.prototype = Object.create(superClass.prototype); subClass.prototype.constructor = subClass; subClass.__proto__ = superClass; }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-var React = require('react');
-var ReactDOM = require('react-dom');
-var UserAgent = require('fbjs/lib/UserAgent');
+var React = require("react");
 
-var invariant = require('fbjs/lib/invariant');
+var UserAgent = require("fbjs/lib/UserAgent");
 
-// In IE, spans with <br> tags render as two newlines. By rendering a span
+var invariant = require("fbjs/lib/invariant"); // In IE, spans with <br> tags render as two newlines. By rendering a span
 // with only a newline character, we can be sure to render a single line.
-var useNewlineChar = UserAgent.isBrowser('IE <= 11');
 
+
+var useNewlineChar = UserAgent.isBrowser('IE <= 11');
 /**
  * Check whether the node should be considered a newline.
  */
+
 function isNewline(node) {
   return useNewlineChar ? node.textContent === '\n' : node.tagName === 'BR';
 }
-
 /**
  * Placeholder elements for empty text content.
  *
@@ -47,17 +43,31 @@ function isNewline(node) {
  * See http://jsfiddle.net/9khdavod/ for the failure case, and
  * http://jsfiddle.net/7pg143f7/ for the fixed case.
  */
-var NEWLINE_A = useNewlineChar ? React.createElement(
-  'span',
-  { key: 'A', 'data-text': 'true' },
-  '\n'
-) : React.createElement('br', { key: 'A', 'data-text': 'true' });
 
-var NEWLINE_B = useNewlineChar ? React.createElement(
-  'span',
-  { key: 'B', 'data-text': 'true' },
-  '\n'
-) : React.createElement('br', { key: 'B', 'data-text': 'true' });
+
+var NEWLINE_A = function NEWLINE_A(ref) {
+  return useNewlineChar ? React.createElement("span", {
+    key: "A",
+    "data-text": "true",
+    ref: ref
+  }, '\n') : React.createElement("br", {
+    key: "A",
+    "data-text": "true",
+    ref: ref
+  });
+};
+
+var NEWLINE_B = function NEWLINE_B(ref) {
+  return useNewlineChar ? React.createElement("span", {
+    key: "B",
+    "data-text": "true",
+    ref: ref
+  }, '\n') : React.createElement("br", {
+    key: "B",
+    "data-text": "true",
+    ref: ref
+  });
+};
 
 /**
  * The lowest-level component in a `DraftEditor`, the text node component
@@ -66,47 +76,65 @@ var NEWLINE_B = useNewlineChar ? React.createElement(
  * nodes with DOM state that already matches the expectations of our immutable
  * editor state.
  */
-var DraftEditorTextNode = function (_React$Component) {
-  _inherits(DraftEditorTextNode, _React$Component);
+var DraftEditorTextNode =
+/*#__PURE__*/
+function (_React$Component) {
+  _inheritsLoose(DraftEditorTextNode, _React$Component);
 
   function DraftEditorTextNode(props) {
-    _classCallCheck(this, DraftEditorTextNode);
+    var _this;
 
-    // By flipping this flag, we also keep flipping keys which forces
+    _this = _React$Component.call(this, props) || this; // By flipping this flag, we also keep flipping keys which forces
     // React to remount this node every time it rerenders.
-    var _this = _possibleConstructorReturn(this, _React$Component.call(this, props));
+
+    _defineProperty(_assertThisInitialized(_this), "_forceFlag", void 0);
+
+    _defineProperty(_assertThisInitialized(_this), "_node", void 0);
 
     _this._forceFlag = false;
     return _this;
   }
 
-  DraftEditorTextNode.prototype.shouldComponentUpdate = function shouldComponentUpdate(nextProps) {
-    var node = ReactDOM.findDOMNode(this);
+  var _proto = DraftEditorTextNode.prototype;
+
+  _proto.shouldComponentUpdate = function shouldComponentUpdate(nextProps) {
+    var node = this._node;
     var shouldBeNewline = nextProps.children === '';
-    !(node instanceof Element) ? process.env.NODE_ENV !== 'production' ? invariant(false, 'node is not an Element') : invariant(false) : void 0;
+    !(node instanceof Element) ? process.env.NODE_ENV !== "production" ? invariant(false, 'node is not an Element') : invariant(false) : void 0;
+
     if (shouldBeNewline) {
       return !isNewline(node);
     }
+
     return node.textContent !== nextProps.children;
   };
 
-  DraftEditorTextNode.prototype.componentDidMount = function componentDidMount() {
+  _proto.componentDidMount = function componentDidMount() {
     this._forceFlag = !this._forceFlag;
   };
 
-  DraftEditorTextNode.prototype.componentDidUpdate = function componentDidUpdate() {
+  _proto.componentDidUpdate = function componentDidUpdate() {
     this._forceFlag = !this._forceFlag;
   };
 
-  DraftEditorTextNode.prototype.render = function render() {
+  _proto.render = function render() {
+    var _this2 = this;
+
     if (this.props.children === '') {
-      return this._forceFlag ? NEWLINE_A : NEWLINE_B;
+      return this._forceFlag ? NEWLINE_A(function (ref) {
+        return _this2._node = ref;
+      }) : NEWLINE_B(function (ref) {
+        return _this2._node = ref;
+      });
     }
-    return React.createElement(
-      'span',
-      { key: this._forceFlag ? 'A' : 'B', 'data-text': 'true' },
-      this.props.children
-    );
+
+    return React.createElement("span", {
+      key: this._forceFlag ? 'A' : 'B',
+      "data-text": "true",
+      ref: function ref(_ref) {
+        return _this2._node = _ref;
+      }
+    }, this.props.children);
   };
 
   return DraftEditorTextNode;

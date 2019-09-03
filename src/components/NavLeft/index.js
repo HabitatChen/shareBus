@@ -2,23 +2,28 @@ import React from "react";
 import menuConfig from '../../config/menuConfig'
 import { Menu } from 'antd';
 import { NavLink } from 'react-router-dom'
+import { connect } from 'react-redux'
+import { switchMenu } from "../../redux/action"
 import './index.less'
 
 const { SubMenu } = Menu;
 
-export default class NavLeft extends React.Component {
+class NavLeft extends React.Component {
 
   constructor(props) {
     super(props)
     this.state = {
-      menuTreeNode: ''
+      menuTreeNode: '',
+      currentKey: ''
     }
   }
 
   componentWillMount() {
     const menuTreeNode = this.renderMenu(menuConfig)
+    let currentKey = window.location.hash.replace('#', '')
     this.setState({
-      menuTreeNode
+      menuTreeNode,
+      currentKey
     })
   }
 
@@ -44,13 +49,27 @@ export default class NavLeft extends React.Component {
     )
   }
 
+  handleClick = (item) => {
+    console.log(item)
+    console.log(item.item.props.title)
+    const { dispatch } = this.props
+    dispatch(switchMenu(item.item.props.title))
+    this.setState({
+      currentKey: item.key
+    })
+  }
+
   render() {
     return (
       <div>
         <div className="logo">
           <img src="/assets/logo-ant.svg" alt=""/>
           <h1>Imooc Ms</h1>
-          <Menu theme='dark'>
+          <Menu
+            onClick={this.handleClick}
+            selectedKeys={[this.state.currentKey]}
+            theme='dark'
+          >
             {this.state.menuTreeNode}
           </Menu>
         </div>
@@ -58,3 +77,9 @@ export default class NavLeft extends React.Component {
     )
   }
 }
+
+const mapStateToPros = {
+
+}
+
+export default connect()(NavLeft)

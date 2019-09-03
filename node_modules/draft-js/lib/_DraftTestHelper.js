@@ -1,34 +1,34 @@
-'use strict';
+"use strict";
 
 /**
- * Copyright (c) 2013-present, Facebook, Inc.
- * All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
- * @providesModule _DraftTestHelper
  * 
  * @format
+ * @emails oncall+draft_js
  */
-
 var BLACK_LIST_PROPS = ['data-reactroot'];
+
 var transformSnapshotProps = function transformSnapshotProps(node) {
   var blackList = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : BLACK_LIST_PROPS;
-
   var stack = [node];
 
   var _loop = function _loop() {
     var node = stack.pop();
+
     if (node.props) {
       if (node.props.className) {
         node.props.className = node.props.className.replace(/-/g, '__');
       }
+
       BLACK_LIST_PROPS.forEach(function (prop) {
         return delete node.props[prop];
       });
     }
+
     if (Array.isArray(node.children)) {
       stack.push.apply(stack, node.children);
     }
@@ -37,6 +37,7 @@ var transformSnapshotProps = function transformSnapshotProps(node) {
   while (stack.length) {
     _loop();
   }
+
   return node;
 };
 
@@ -55,5 +56,4 @@ var DraftTestHelper = {
    */
   transformSnapshotProps: transformSnapshotProps
 };
-
 module.exports = DraftTestHelper;

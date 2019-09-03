@@ -1,36 +1,32 @@
 /**
- * Copyright (c) 2013-present, Facebook, Inc.
- * All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
- * @providesModule DraftEditorContents-core.react
  * @format
  * 
+ * @emails oncall+draft_js
  */
-
 'use strict';
 
-var _assign = require('object-assign');
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } return target; }
 
-var _extends = _assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _inheritsLoose(subClass, superClass) { subClass.prototype = Object.create(superClass.prototype); subClass.prototype.constructor = subClass; subClass.__proto__ = superClass; }
 
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+var DraftEditorBlock = require("./DraftEditorBlock.react");
 
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+var DraftOffsetKey = require("./DraftOffsetKey");
 
-var DraftEditorBlock = require('./DraftEditorBlock.react');
-var DraftOffsetKey = require('./DraftOffsetKey');
-var EditorState = require('./EditorState');
-var React = require('react');
+var React = require("react");
 
-var cx = require('fbjs/lib/cx');
-var joinClasses = require('fbjs/lib/joinClasses');
-var nullthrows = require('fbjs/lib/nullthrows');
+var cx = require("fbjs/lib/cx");
+
+var joinClasses = require("fbjs/lib/joinClasses");
+
+var nullthrows = require("fbjs/lib/nullthrows");
 
 /**
  * Provide default styling for list items. This way, lists will be styled with
@@ -47,12 +43,11 @@ var getListItemClasses = function getListItemClasses(type, depth, shouldResetCou
     'public/DraftStyleDefault/depth1': depth === 1,
     'public/DraftStyleDefault/depth2': depth === 2,
     'public/DraftStyleDefault/depth3': depth === 3,
-    'public/DraftStyleDefault/depth4': depth === 4,
+    'public/DraftStyleDefault/depth4': depth >= 4,
     'public/DraftStyleDefault/listLTR': direction === 'LTR',
     'public/DraftStyleDefault/listRTL': direction === 'RTL'
   });
 };
-
 /**
  * `DraftEditorContents` is the container component for all block components
  * rendered for a `DraftEditor`. It is optimized to aggressively avoid
@@ -63,23 +58,24 @@ var getListItemClasses = function getListItemClasses(type, depth, shouldResetCou
  * the contents of the editor.
  */
 
-var DraftEditorContents = function (_React$Component) {
-  _inherits(DraftEditorContents, _React$Component);
+
+var DraftEditorContents =
+/*#__PURE__*/
+function (_React$Component) {
+  _inheritsLoose(DraftEditorContents, _React$Component);
 
   function DraftEditorContents() {
-    _classCallCheck(this, DraftEditorContents);
-
-    return _possibleConstructorReturn(this, _React$Component.apply(this, arguments));
+    return _React$Component.apply(this, arguments) || this;
   }
 
-  DraftEditorContents.prototype.shouldComponentUpdate = function shouldComponentUpdate(nextProps) {
+  var _proto = DraftEditorContents.prototype;
+
+  _proto.shouldComponentUpdate = function shouldComponentUpdate(nextProps) {
     var prevEditorState = this.props.editorState;
     var nextEditorState = nextProps.editorState;
-
     var prevDirectionMap = prevEditorState.getDirectionMap();
-    var nextDirectionMap = nextEditorState.getDirectionMap();
+    var nextDirectionMap = nextEditorState.getDirectionMap(); // Text direction has changed for one or more blocks. We must re-render.
 
-    // Text direction has changed for one or more blocks. We must re-render.
     if (prevDirectionMap !== nextDirectionMap) {
       return true;
     }
@@ -92,12 +88,10 @@ var DraftEditorContents = function (_React$Component) {
     }
 
     var nextNativeContent = nextEditorState.getNativelyRenderedContent();
-
     var wasComposing = prevEditorState.isInCompositionMode();
-    var nowComposing = nextEditorState.isInCompositionMode();
-
-    // If the state is unchanged or we're currently rendering a natively
+    var nowComposing = nextEditorState.isInCompositionMode(); // If the state is unchanged or we're currently rendering a natively
     // rendered state, there's nothing new to be done.
+
     if (prevEditorState === nextEditorState || nextNativeContent !== null && nextEditorState.getCurrentContent() === nextNativeContent || wasComposing && nowComposing) {
       return false;
     }
@@ -109,39 +103,38 @@ var DraftEditorContents = function (_React$Component) {
     return wasComposing !== nowComposing || prevContent !== nextContent || prevDecorator !== nextDecorator || nextEditorState.mustForceSelection();
   };
 
-  DraftEditorContents.prototype.render = function render() {
-    var _props = this.props,
-        blockRenderMap = _props.blockRenderMap,
-        blockRendererFn = _props.blockRendererFn,
-        blockStyleFn = _props.blockStyleFn,
-        customStyleMap = _props.customStyleMap,
-        customStyleFn = _props.customStyleFn,
-        editorState = _props.editorState,
-        editorKey = _props.editorKey,
-        textDirectionality = _props.textDirectionality;
-
-
+  _proto.render = function render() {
+    var _this$props = this.props,
+        blockRenderMap = _this$props.blockRenderMap,
+        blockRendererFn = _this$props.blockRendererFn,
+        blockStyleFn = _this$props.blockStyleFn,
+        customStyleMap = _this$props.customStyleMap,
+        customStyleFn = _this$props.customStyleFn,
+        editorState = _this$props.editorState,
+        editorKey = _this$props.editorKey,
+        textDirectionality = _this$props.textDirectionality;
     var content = editorState.getCurrentContent();
     var selection = editorState.getSelection();
     var forceSelection = editorState.mustForceSelection();
     var decorator = editorState.getDecorator();
     var directionMap = nullthrows(editorState.getDirectionMap());
-
     var blocksAsArray = content.getBlocksAsArray();
     var processedBlocks = [];
-
     var currentDepth = null;
     var lastWrapperTemplate = null;
 
     for (var ii = 0; ii < blocksAsArray.length; ii++) {
       var _block = blocksAsArray[ii];
+
       var key = _block.getKey();
+
       var blockType = _block.getType();
 
       var customRenderer = blockRendererFn(_block);
       var CustomComponent = void 0,
           customProps = void 0,
           customEditable = void 0;
+
       if (customRenderer) {
         CustomComponent = customRenderer.component;
         customProps = customRenderer.props;
@@ -165,42 +158,42 @@ var DraftEditorContents = function (_React$Component) {
         selection: selection,
         tree: editorState.getBlockTree(key)
       };
-
       var configForType = blockRenderMap.get(blockType) || blockRenderMap.get('unstyled');
       var wrapperTemplate = configForType.wrapper;
-
       var Element = configForType.element || blockRenderMap.get('unstyled').element;
 
       var depth = _block.getDepth();
-      var className = '';
-      if (blockStyleFn) {
-        className = blockStyleFn(_block);
-      }
 
-      // List items are special snowflakes, since we handle nesting and
+      var _className = '';
+
+      if (blockStyleFn) {
+        _className = blockStyleFn(_block);
+      } // List items are special snowflakes, since we handle nesting and
       // counters manually.
+
+
       if (Element === 'li') {
         var shouldResetCount = lastWrapperTemplate !== wrapperTemplate || currentDepth === null || depth > currentDepth;
-        className = joinClasses(className, getListItemClasses(blockType, depth, shouldResetCount, direction));
+        _className = joinClasses(_className, getListItemClasses(blockType, depth, shouldResetCount, direction));
       }
 
       var Component = CustomComponent || DraftEditorBlock;
       var childProps = {
-        className: className,
+        className: _className,
         'data-block': true,
         'data-editor': editorKey,
         'data-offset-key': offsetKey,
         key: key
       };
+
       if (customEditable !== undefined) {
-        childProps = _extends({}, childProps, {
+        childProps = _objectSpread({}, childProps, {
           contentEditable: customEditable,
           suppressContentEditableWarning: true
         });
       }
 
       var child = React.createElement(Element, childProps, React.createElement(Component, componentProps));
-
       processedBlocks.push({
         block: child,
         wrapperTemplate: wrapperTemplate,
@@ -213,19 +206,24 @@ var DraftEditorContents = function (_React$Component) {
       } else {
         currentDepth = null;
       }
-      lastWrapperTemplate = wrapperTemplate;
-    }
 
-    // Group contiguous runs of blocks that have the same wrapperTemplate
+      lastWrapperTemplate = wrapperTemplate;
+    } // Group contiguous runs of blocks that have the same wrapperTemplate
+
+
     var outputBlocks = [];
+
     for (var _ii = 0; _ii < processedBlocks.length;) {
       var info = processedBlocks[_ii];
+
       if (info.wrapperTemplate) {
         var blocks = [];
+
         do {
           blocks.push(processedBlocks[_ii].block);
           _ii++;
         } while (_ii < processedBlocks.length && processedBlocks[_ii].wrapperTemplate === info.wrapperTemplate);
+
         var wrapperElement = React.cloneElement(info.wrapperTemplate, {
           key: info.key + '-wrap',
           'data-offset-key': info.offsetKey
@@ -237,11 +235,9 @@ var DraftEditorContents = function (_React$Component) {
       }
     }
 
-    return React.createElement(
-      'div',
-      { 'data-contents': 'true' },
-      outputBlocks
-    );
+    return React.createElement("div", {
+      "data-contents": "true"
+    }, outputBlocks);
   };
 
   return DraftEditorContents;

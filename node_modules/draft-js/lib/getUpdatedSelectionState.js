@@ -1,29 +1,28 @@
 /**
- * Copyright (c) 2013-present, Facebook, Inc.
- * All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
- * @providesModule getUpdatedSelectionState
  * @format
  * 
+ * @emails oncall+draft_js
  */
-
 'use strict';
 
-var DraftOffsetKey = require('./DraftOffsetKey');
+var DraftOffsetKey = require("./DraftOffsetKey");
 
-var nullthrows = require('fbjs/lib/nullthrows');
+var nullthrows = require("fbjs/lib/nullthrows");
 
 function getUpdatedSelectionState(editorState, anchorKey, anchorOffset, focusKey, focusOffset) {
   var selection = nullthrows(editorState.getSelection());
-  if (process.env.NODE_ENV !== 'production') {
+
+  if (process.env.NODE_ENV !== "production") {
     if (!anchorKey || !focusKey) {
       /*eslint-disable no-console */
       console.warn('Invalid selection state.', arguments, editorState.toJS());
       /*eslint-enable no-console */
+
       return selection;
     }
   }
@@ -31,17 +30,13 @@ function getUpdatedSelectionState(editorState, anchorKey, anchorOffset, focusKey
   var anchorPath = DraftOffsetKey.decode(anchorKey);
   var anchorBlockKey = anchorPath.blockKey;
   var anchorLeaf = editorState.getBlockTree(anchorBlockKey).getIn([anchorPath.decoratorKey, 'leaves', anchorPath.leafKey]);
-
   var focusPath = DraftOffsetKey.decode(focusKey);
   var focusBlockKey = focusPath.blockKey;
   var focusLeaf = editorState.getBlockTree(focusBlockKey).getIn([focusPath.decoratorKey, 'leaves', focusPath.leafKey]);
-
   var anchorLeafStart = anchorLeaf.get('start');
   var focusLeafStart = focusLeaf.get('start');
-
   var anchorBlockOffset = anchorLeaf ? anchorLeafStart + anchorOffset : null;
   var focusBlockOffset = focusLeaf ? focusLeafStart + focusOffset : null;
-
   var areEqual = selection.getAnchorKey() === anchorBlockKey && selection.getAnchorOffset() === anchorBlockOffset && selection.getFocusKey() === focusBlockKey && selection.getFocusOffset() === focusBlockOffset;
 
   if (areEqual) {
@@ -49,9 +44,11 @@ function getUpdatedSelectionState(editorState, anchorKey, anchorOffset, focusKey
   }
 
   var isBackward = false;
+
   if (anchorBlockKey === focusBlockKey) {
     var anchorLeafEnd = anchorLeaf.get('end');
     var focusLeafEnd = focusLeaf.get('end');
+
     if (focusLeafStart === anchorLeafStart && focusLeafEnd === anchorLeafEnd) {
       isBackward = focusOffset < anchorOffset;
     } else {

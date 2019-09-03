@@ -1,19 +1,16 @@
 /**
- * Copyright (c) 2013-present, Facebook, Inc.
- * All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
- * @providesModule getRangeBoundingClientRect
  * @format
  * 
+ * @emails oncall+draft_js
  */
-
 'use strict';
 
-var getRangeClientRects = require('./getRangeClientRects');
+var getRangeClientRects = require("./getRangeClientRects");
 
 /**
  * Like range.getBoundingClientRect() but normalizes for browser bugs.
@@ -49,6 +46,7 @@ function getRangeBoundingClientRect(range) {
 
     for (var ii = 1; ii < rects.length; ii++) {
       var rect = rects[ii];
+
       if (rect.height !== 0 && rect.width !== 0) {
         top = Math.min(top, rect.top);
         right = Math.max(right, rect.right);

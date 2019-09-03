@@ -1,42 +1,49 @@
 /**
- * Copyright (c) 2013-present, Facebook, Inc.
- * All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
- * @providesModule editOnPaste
  * @format
  * 
+ * @emails oncall+draft_js
  */
-
 'use strict';
 
-var BlockMapBuilder = require('./BlockMapBuilder');
-var CharacterMetadata = require('./CharacterMetadata');
-var DataTransfer = require('fbjs/lib/DataTransfer');
-var DraftModifier = require('./DraftModifier');
-var DraftPasteProcessor = require('./DraftPasteProcessor');
-var EditorState = require('./EditorState');
-var RichTextEditorUtil = require('./RichTextEditorUtil');
+var BlockMapBuilder = require("./BlockMapBuilder");
 
-var getEntityKeyForSelection = require('./getEntityKeyForSelection');
-var getTextContentFromFiles = require('./getTextContentFromFiles');
-var isEventHandled = require('./isEventHandled');
-var splitTextIntoTextBlocks = require('./splitTextIntoTextBlocks');
+var CharacterMetadata = require("./CharacterMetadata");
 
+var DataTransfer = require("fbjs/lib/DataTransfer");
+
+var DraftModifier = require("./DraftModifier");
+
+var DraftPasteProcessor = require("./DraftPasteProcessor");
+
+var EditorState = require("./EditorState");
+
+var RichTextEditorUtil = require("./RichTextEditorUtil");
+
+var getEntityKeyForSelection = require("./getEntityKeyForSelection");
+
+var getTextContentFromFiles = require("./getTextContentFromFiles");
+
+var isEventHandled = require("./isEventHandled");
+
+var splitTextIntoTextBlocks = require("./splitTextIntoTextBlocks");
 /**
  * Paste content.
  */
+
+
 function editOnPaste(editor, e) {
   e.preventDefault();
-  var data = new DataTransfer(e.clipboardData);
+  var data = new DataTransfer(e.clipboardData); // Get files, unless this is likely to be a string the user wants inline.
 
-  // Get files, unless this is likely to be a string the user wants inline.
   if (!data.isRichText()) {
     var files = data.getFiles();
     var defaultFileText = data.getText();
+
     if (files.length > 0) {
       // Allow customized paste handling for images, etc. Otherwise, fall
       // through to insert text contents into the editor.
@@ -44,8 +51,11 @@ function editOnPaste(editor, e) {
         return;
       }
 
-      getTextContentFromFiles(files, function ( /*string*/fileText) {
+      getTextContentFromFiles(files, function (
+      /*string*/
+      fileText) {
         fileText = fileText || defaultFileText;
+
         if (!fileText) {
           return;
         }
@@ -57,15 +67,11 @@ function editOnPaste(editor, e) {
           entity: getEntityKeyForSelection(editorState.getCurrentContent(), editorState.getSelection())
         });
         var currentBlockType = RichTextEditorUtil.getCurrentBlockType(editorState);
-
         var text = DraftPasteProcessor.processText(blocks, character, currentBlockType);
         var fragment = BlockMapBuilder.createFromArray(text);
-
         var withInsertedText = DraftModifier.replaceWithFragment(editorState.getCurrentContent(), editorState.getSelection(), fragment);
-
         editor.update(EditorState.push(editorState, withInsertedText, 'insert-fragment'));
       });
-
       return;
     }
   }
@@ -92,12 +98,11 @@ function editOnPaste(editor, e) {
     // editor in Firefox and IE will not include empty lines. The resulting
     // paste will preserve the newlines correctly.
     var internalClipboard = editor.getClipboard();
+
     if (data.isRichText() && internalClipboard) {
-      if (
-      // If the editorKey is present in the pasted HTML, it should be safe to
+      if ( // If the editorKey is present in the pasted HTML, it should be safe to
       // assume this is an internal paste.
-      html.indexOf(editor.getEditorKey()) !== -1 ||
-      // The copy may have been made within a single block, in which case the
+      html.indexOf(editor.getEditorKey()) !== -1 || // The copy may have been made within a single block, in which case the
       // editor key won't be part of the paste. In this case, just check
       // whether the pasted text matches the internal clipboard.
       textBlocks.length === 1 && internalClipboard.size === 1 && internalClipboard.first().getText() === text) {
@@ -110,11 +115,12 @@ function editOnPaste(editor, e) {
       // the clipboard. See https://bugs.webkit.org/show_bug.cgi?id=19893.
       editor.update(insertFragment(editor._latestEditorState, internalClipboard));
       return;
-    }
+    } // If there is html paste data, try to parse that.
 
-    // If there is html paste data, try to parse that.
+
     if (html) {
       var htmlFragment = DraftPasteProcessor.processHTML(html, editor.props.blockRenderMap);
+
       if (htmlFragment) {
         var contentBlocks = htmlFragment.contentBlocks,
             entityMap = htmlFragment.entityMap;
@@ -125,10 +131,10 @@ function editOnPaste(editor, e) {
           return;
         }
       }
-    }
-
-    // Otherwise, create a new fragment from our pasted text. Also
+    } // Otherwise, create a new fragment from our pasted text. Also
     // empty the internal clipboard, since it's no longer valid.
+
+
     editor.setClipboard(null);
   }
 
@@ -137,19 +143,15 @@ function editOnPaste(editor, e) {
       style: editorState.getCurrentInlineStyle(),
       entity: getEntityKeyForSelection(editorState.getCurrentContent(), editorState.getSelection())
     });
-
     var currentBlockType = RichTextEditorUtil.getCurrentBlockType(editorState);
-
     var textFragment = DraftPasteProcessor.processText(textBlocks, character, currentBlockType);
-
     var textMap = BlockMapBuilder.createFromArray(textFragment);
     editor.update(insertFragment(editor._latestEditorState, textMap));
   }
 }
 
 function insertFragment(editorState, fragment, entityMap) {
-  var newContent = DraftModifier.replaceWithFragment(editorState.getCurrentContent(), editorState.getSelection(), fragment);
-  // TODO: merge the entity map once we stop using DraftEntity
+  var newContent = DraftModifier.replaceWithFragment(editorState.getCurrentContent(), editorState.getSelection(), fragment); // TODO: merge the entity map once we stop using DraftEntity
   // like this:
   // const mergedEntityMap = newContent.getEntityMap().merge(entityMap);
 

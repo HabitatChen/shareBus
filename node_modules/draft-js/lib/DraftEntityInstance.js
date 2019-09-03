@@ -1,36 +1,26 @@
 /**
- * Copyright (c) 2013-present, Facebook, Inc.
- * All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
- * @providesModule DraftEntityInstance
  * @legacyServerCallableInstance
  * @format
  * 
+ * @emails oncall+draft_js
  */
-
 'use strict';
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _inheritsLoose(subClass, superClass) { subClass.prototype = Object.create(superClass.prototype); subClass.prototype.constructor = subClass; subClass.__proto__ = superClass; }
 
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Immutable = require('immutable');
+var Immutable = require("immutable");
 
 var Record = Immutable.Record;
-
-
 var DraftEntityInstanceRecord = Record({
   type: 'TOKEN',
   mutability: 'IMMUTABLE',
   data: Object
 });
-
 /**
  * An instance of a document entity, consisting of a `type` and relevant
  * `data`, metadata about the entity.
@@ -43,24 +33,26 @@ var DraftEntityInstanceRecord = Record({
  * a hovercard.
  */
 
-var DraftEntityInstance = function (_DraftEntityInstanceR) {
-  _inherits(DraftEntityInstance, _DraftEntityInstanceR);
+var DraftEntityInstance =
+/*#__PURE__*/
+function (_DraftEntityInstanceR) {
+  _inheritsLoose(DraftEntityInstance, _DraftEntityInstanceR);
 
   function DraftEntityInstance() {
-    _classCallCheck(this, DraftEntityInstance);
-
-    return _possibleConstructorReturn(this, _DraftEntityInstanceR.apply(this, arguments));
+    return _DraftEntityInstanceR.apply(this, arguments) || this;
   }
 
-  DraftEntityInstance.prototype.getType = function getType() {
+  var _proto = DraftEntityInstance.prototype;
+
+  _proto.getType = function getType() {
     return this.get('type');
   };
 
-  DraftEntityInstance.prototype.getMutability = function getMutability() {
+  _proto.getMutability = function getMutability() {
     return this.get('mutability');
   };
 
-  DraftEntityInstance.prototype.getData = function getData() {
+  _proto.getData = function getData() {
     return this.get('data');
   };
 
